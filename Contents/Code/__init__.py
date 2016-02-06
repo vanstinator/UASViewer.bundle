@@ -36,7 +36,7 @@ def CategoryMenu(bundle_type):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     for key, value in UAS.CHANNEL_DICT:
         if bundle_type in value["type"]:
-            oc.add(DirectoryObject(key=Callback(InstallChannel, id=key),
+            oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, title=value["title"], summary=value["description"], icon=value["icon"]),
                                    title=value["title"],
                                    summary=value["description"],
                                    thumb=Callback(Thumb,
@@ -51,11 +51,23 @@ def CategoryMenu(bundle_type):
                    )
     return oc
 
+
+@route(PREFIX + '/ChannelInfo')
+def ChannelInfo(key, title, summary, icon):
+    oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
+    oc.add(DirectoryObject(key=Callback(InstallChannel, id=key),
+                           title="Install Channel"
+                           )
+           )
+    return oc
+
+
 @route(PREFIX + '/InstallChannel')
 def InstallChannel(id):
     if UAS.install_bundle(id, Prefs['PLEX_PATH'], Prefs['WEB_TOOLS_PORT']):
         return MainMenu(message="Channel Installed Successfully.")
     return MainMenu(message="Channel Installation Failed. Please see WebTools logs.")
+
 
 @route(PREFIX + '/ValidatePrefs')
 def ValidatePrefs():
