@@ -1,15 +1,18 @@
 import requests
 
+
 class WebToolsAPI:
+    """ Interfaces between the UASViewer channel code and the WebTools 2.0 API
+    """
 
     SESSION = requests.session()
     BUNDLE_TYPES = None
     CHANNEL_DICT = None
 
-    def __init__(self):
+    def __init__(self, plex_path, plex_port, plex_username, plex_password):
         global BUNDLE_TYPES, CHANNEL_DICT, SESSION
-        self.auth_session()
-        bundles = SESSION.get('http://localhost:33400/webtools2?module=pms&function=getAllBundleInfo')
+        self.auth_session(plex_username, plex_password)
+        bundles = SESSION.get('http://' + plex_path + ':' + plex_port + '/webtools2?module=pms&function=getAllBundleInfo')
         BUNDLE_TYPES = self.build_bundle_type_dict(bundles.json())
         CHANNEL_DICT = bundles.json()
 
@@ -22,6 +25,6 @@ class WebToolsAPI:
         return bundle_types
 
     @staticmethod
-    def auth_session():
-        payload = {'user': 'vanstinator', 'pwd': 'CHS50PEDIT3SbrbhXDyvTsu6'}
+    def auth_session(plex_username, plex_password):
+        payload = {'user': plex_username, 'pwd': plex_password}
         SESSION.post('http://localhost:33400/login', data=payload)
