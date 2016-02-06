@@ -13,7 +13,7 @@ class WebToolsAPI:
     def __init__(self, plex_path, web_tools_port, plex_username, plex_password):
         global BUNDLE_TYPES, CHANNEL_DICT, SESSION, IS_AUTHENTICATED
         SESSION = requests.session()
-        IS_AUTHENTICATED = self.auth_session(plex_path, web_tools_port, plex_username, plex_password)
+        self.IS_AUTHENTICATED = self.auth_session(plex_path, web_tools_port, plex_username, plex_password)
         self.cache_bundle_data(plex_path, web_tools_port)
 
     def cache_bundle_data(self, plex_path, web_tools_port):
@@ -23,7 +23,7 @@ class WebToolsAPI:
         :param web_tools_port:
         :return: Bundle Data from WebTools if authenticated properly
         """
-        if IS_AUTHENTICATED:
+        if self.IS_AUTHENTICATED:
             bundles = SESSION.get('http://' + plex_path + ':' + web_tools_port + '/webtools2?module=pms&function=getAllBundleInfo')
             self.BUNDLE_TYPES = self.build_bundle_type_dict(bundles.json())
             self.CHANNEL_DICT = bundles.json().items()
@@ -39,10 +39,8 @@ class WebToolsAPI:
     @staticmethod
     def auth_session(plex_path, web_tools_port, plex_username, plex_password):
         payload = {'user': plex_username, 'pwd': plex_password}
-        r = SESSION.post('http://' + plex_path + ':' + web_tools_port + '/login', data=payload)
-        if r.status_code == 200 and SESSION.cookies['WebTools'] is not None:
-            return True
-        return False
+        SESSION.post('http://' + plex_path + ':' + web_tools_port + '/login', data=payload)
+        return SESSION.cookies['WebTools'] is not None
 
     @staticmethod
     def install_bundle(bundle_id, plex_path, web_tools_port):
