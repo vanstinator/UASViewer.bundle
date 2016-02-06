@@ -40,7 +40,7 @@ class WebToolsAPI:
     def auth_session(plex_path, web_tools_port, plex_username, plex_password):
         payload = {'user': plex_username, 'pwd': plex_password}
         r = SESSION.post('http://' + plex_path + ':' + web_tools_port + '/login', data=payload)
-        if r.status_code == 200 and len(SESSION.cookies) > 0:
+        if r.status_code == 200 and SESSION.cookies['WebTools'] is not None:
             return True
         return False
 
