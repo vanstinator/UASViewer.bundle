@@ -33,6 +33,6 @@ class WebToolsAPI:
     @staticmethod
     def install_bundle(bundle_id, plex_path, plex_port):
         r = SESSION.get('http://' + plex_path + ':' + plex_port + '/webtools2?module=git&function=getGit&url=' + bundle_id)
-        if(r.status_code == 200):
+        if r.status_code == 200:
             return True
         return False

@@ -11,8 +11,6 @@ def Start():
     """
     Log('Starting UASViewer')
     ObjectContainer.title1 = NAME
-    # Plugin.AddViewGroup('List', viewMode='List', mediaType='items')
-    # ObjectContainer.view_group = 'List'
     ValidatePrefs()
 
 
@@ -21,9 +19,16 @@ def Start():
 def MainMenu(message=""):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     oc.message = message
-    for value in UAS.BUNDLE_TYPES:
-        oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
-    return oc
+    try:
+        for value in UAS.BUNDLE_TYPES:
+            if Prefs['HIDE_ADULT']:
+                if value != "Adult":
+                    oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
+            else:
+                oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
+        return oc
+    except:
+        ValidatePrefs()
 
 
 @route(PREFIX + '/Category')
@@ -31,7 +36,6 @@ def CategoryMenu(bundle_type):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     for key, value in UAS.CHANNEL_DICT:
         if bundle_type in value["type"]:
-            Log('http://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT'] + '/uas/Resources/' + value["icon"])
             oc.add(DirectoryObject(key=Callback(InstallChannel, id=key),
                                    title=value["title"],
                                    summary=value["description"],
@@ -60,14 +64,18 @@ def ValidatePrefs():
     global UAS
     Log('Validating Prefs')
     Log('Initializing WebTools Session')
+    UAS = None
     UAS = webtools.WebToolsAPI(Prefs['PLEX_PATH'], Prefs['WEB_TOOLS_PORT'], Prefs['PLEX_USERNAME'],
                                Prefs['PLEX_PASSWORD'])
 
 def Thumb(url):
     """ Go try to get the thumbnail and cache it into memory
     """
+    Log('Attempting to cache image ' + url)
     try:
         data = HTTP.Request(url, cacheTime=CACHE_1MONTH).content
+        Log('Caching image was successful')
         return DataObject(data, 'image/jpeg')
     except:
+        Log('Caching image failed. Deferring to default channel icon')
         return Redirect(R(ICON))

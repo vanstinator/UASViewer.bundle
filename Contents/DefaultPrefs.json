@@ -21,8 +21,14 @@
   },
   {
     "id": "WEB_TOOLS_PORT",
-    "label": "PMS Port",
+    "label": "WebTools Port",
     "type": "text",
     "default": "32400"
+  },
+  {
+    "id": "HIDE_ADULT",
+    "label": "Hide Adult Content",
+    "type": "bool",
+    "default": "false"
   }
 ]
