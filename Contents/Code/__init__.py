@@ -3,11 +3,7 @@ import webtools
 PREFIX = "/applications/UASViewer"
 NAME = 'UASViewer'
 ART = 'background.jpg'
-ICON = 'plexwink.png'
-
-
-# PREFS_ICON = 'plexwink.png'
-# PROFILE_ICON = 'plexwink.png'
+ICON = ''  # TODO find a channel icon
 
 
 def Start():
@@ -22,8 +18,9 @@ def Start():
 
 @handler(PREFIX, NAME, art=R(ART), thumb=R(ICON))
 @route(PREFIX + '/MainMenu')
-def MainMenu():
+def MainMenu(message=""):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
+    oc.message = message
     for value in UAS.BUNDLE_TYPES:
         oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
     return oc
@@ -35,7 +32,7 @@ def CategoryMenu(bundle_type):
     for key, value in UAS.CHANNEL_DICT:
         if bundle_type in value["type"]:
             Log('http://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT'] + '/uas/Resources/' + value["icon"])
-            oc.add(DirectoryObject(key=Callback(CategoryMenu),
+            oc.add(DirectoryObject(key=Callback(InstallChannel, id=key),
                                    title=value["title"],
                                    summary=value["description"],
                                    thumb=Callback(Thumb,
@@ -50,6 +47,11 @@ def CategoryMenu(bundle_type):
                    )
     return oc
 
+@route(PREFIX + '/InstallChannel')
+def InstallChannel(id):
+    if UAS.install_bundle(id, Prefs['PLEX_PATH'], Prefs['WEB_TOOLS_PORT']):
+        return MainMenu(message="Channel Installed Successfully.")
+    return MainMenu(message="Channel Installation Failed. Please see WebTools logs.")
 
 @route(PREFIX + '/ValidatePrefs')
 def ValidatePrefs():
@@ -61,9 +63,8 @@ def ValidatePrefs():
     UAS = webtools.WebToolsAPI(Prefs['PLEX_PATH'], Prefs['WEB_TOOLS_PORT'], Prefs['PLEX_USERNAME'],
                                Prefs['PLEX_PASSWORD'])
 
-
 def Thumb(url):
-    """ Go try to get the thumbnail and load it into memory
+    """ Go try to get the thumbnail and cache it into memory
     """
     try:
         data = HTTP.Request(url, cacheTime=CACHE_1MONTH).content

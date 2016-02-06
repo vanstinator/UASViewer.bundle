@@ -29,3 +29,10 @@ class WebToolsAPI:
     def auth_session(plex_path, plex_port, plex_username, plex_password):
         payload = {'user': plex_username, 'pwd': plex_password}
         SESSION.post('http://' + plex_path + ':' + plex_port + '/login', data=payload)
+
+    @staticmethod
+    def install_bundle(bundle_id, plex_path, plex_port):
+        r = SESSION.get('http://' + plex_path + ':' + plex_port + '/webtools2?module=git&function=getGit&url=' + bundle_id)
+        if(r.status_code == 200):
+            return True
+        return False
