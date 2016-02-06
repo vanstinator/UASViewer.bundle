@@ -1,0 +1,28 @@
+[
+  {
+    "id": "PLEX_USERNAME",
+    "label": "Plex.tv Login",
+    "type": "text",
+    "default": "PLEX_USERNAME"
+  },
+  {
+    "id": "PLEX_PASSWORD",
+    "label": "Plex.TV password",
+    "type": "text",
+    "option": "hidden",
+    "default": "",
+    "secure": "true"
+  },
+  {
+    "id": "PLEX_PATH",
+    "label": "PMS IP Address",
+    "type": "text",
+    "default": "localhost"
+  },
+  {
+    "id": "WEB_TOOLS_PORT",
+    "label": "PMS Port",
+    "type": "text",
+    "default": "32400"
+  }
+]
