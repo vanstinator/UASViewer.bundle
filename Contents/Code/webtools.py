@@ -40,7 +40,10 @@ class WebToolsAPI:
     def auth_session(plex_path, web_tools_port, plex_username, plex_password):
         payload = {'user': plex_username, 'pwd': plex_password}
         SESSION.post('http://' + plex_path + ':' + web_tools_port + '/login', data=payload)
-        return SESSION.cookies['WebTools'] is not None
+        try:
+            return SESSION.cookies['WebTools'] is not None
+        except KeyError:
+            return False
 
     @staticmethod
     def install_bundle(bundle_id, plex_path, web_tools_port):
