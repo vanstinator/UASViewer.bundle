@@ -3,7 +3,7 @@ import webtools
 PREFIX = "/applications/UASViewer"
 NAME = 'UASViewer'
 ART = 'background.jpg'
-ICON = ''  # TODO find a channel icon
+ICON = 'icon-default.png'  # TODO find a channel icon
 
 
 def Start():
