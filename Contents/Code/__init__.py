@@ -67,6 +67,11 @@ def ValidatePrefs():
     UAS = None
     UAS = webtools.WebToolsAPI(Prefs['PLEX_PATH'], Prefs['WEB_TOOLS_PORT'], Prefs['PLEX_USERNAME'],
                                Prefs['PLEX_PASSWORD'])
+    if UAS.IS_AUTHENTICATED:
+        Log('Connected to WebTools UAS successfully')
+    else:
+        Log('Connection to WebTools UAS was unsuccessful')
+
 
 def Thumb(url):
     """ Go try to get the thumbnail and cache it into memory
