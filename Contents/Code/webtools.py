@@ -2,7 +2,8 @@ import requests
 
 
 class WebToolsAPI:
-    """ Interfaces between the UASViewer channel code and the WebTools 2.0 API
+    """
+    Interfaces between the UASViewer channel code and the WebTools 2.0 API
     """
 
     def __init__(self, plex_username, plex_password, plex_path="localhost", web_tools_port="33400"):
@@ -25,6 +26,7 @@ class WebToolsAPI:
         self._password = plex_password
         self._path = plex_path
         self._port = web_tools_port
+        self._full_path = 'http://' + self._path + ':' + self._port
 
         # Function calls
         self._auth_session()
@@ -36,7 +38,7 @@ class WebToolsAPI:
         :return: boolean
         """
         payload = {'user': self._username, 'pwd': self._password}
-        self.session.post('http://' + self._path + ':' + self._port + '/login', data=payload)
+        self.session.post(self._full_path + '/login', data=payload)
         try:
             if self.session.cookies['WebTools'] is not None:
                 self._auth_status = True
@@ -49,7 +51,7 @@ class WebToolsAPI:
         :return: Bundle Data from WebTools if authenticated properly
         """
         if self._auth_status:
-            bundles = self.session.get('http://' + self._path + ':' + self._port + '/webtools2?module=pms&function=getAllBundleInfo')
+            bundles = self.session.get(self._full_path + '/webtools2?module=pms&function=getAllBundleInfo')
             self._build_bundle_type_dict(bundles.json())
             self.channel_dict = bundles.json().items()
 
@@ -76,7 +78,7 @@ class WebToolsAPI:
         :param bundle_id:
         :return: boolean
         """
-        r = self.session.get('http://' + self._path + ':' + self._port + '/webtools2?module=git&function=getGit&url=' + bundle_id)
+        r = self.session.get(self._full_path + '/webtools2?module=git&function=getGit&url=' + bundle_id)
         if r.status_code == 200:
             return True
         return False
