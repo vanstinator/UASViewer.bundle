@@ -6,7 +6,7 @@ class WebToolsAPI:
     Interfaces between the UASViewer channel code and the WebTools 2.0 API
     """
 
-    def __init__(self, plex_username, plex_password, plex_path="localhost", web_tools_port="33400"):
+    def __init__(self, plex_username, plex_password, use_ssl, plex_path="localhost", web_tools_port="33400"):
         """
         Instantiate a new authenticated WebToolsAPI session to interact with the WebTools Channel.
 
@@ -26,7 +26,10 @@ class WebToolsAPI:
         self._password = plex_password
         self._path = plex_path
         self._port = web_tools_port
-        self._full_path = 'http://' + self._path + ':' + self._port
+        if use_ssl:
+            self._full_path = 'https://' + self._path + ':' + self._port
+        else:
+            self._full_path = 'http://' + self._path + ':' + self._port
 
         # Function calls
         self._auth_session()

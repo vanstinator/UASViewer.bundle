@@ -80,6 +80,7 @@ def ValidatePrefs():
     UAS = None
     UAS = webtools.WebToolsAPI(Prefs['PLEX_USERNAME'],
                                Prefs['PLEX_PASSWORD'],
+                               Prefs['USE_SSL'],
                                Prefs['PLEX_PATH'],
                                Prefs['WEB_TOOLS_PORT'])
     if UAS.is_authenticated():
