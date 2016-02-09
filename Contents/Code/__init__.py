@@ -20,7 +20,7 @@ def MainMenu(message=""):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     oc.message = message
     try:
-        for value in UAS.BUNDLE_TYPES:
+        for value in UAS.channel_types:
             if Prefs['HIDE_ADULT']:
                 if value != "Adult":
                     oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
@@ -34,7 +34,7 @@ def MainMenu(message=""):
 @route(PREFIX + '/Category')
 def CategoryMenu(bundle_type):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
-    for key, value in UAS.CHANNEL_DICT:
+    for key, value in UAS.channel_dict:
         if bundle_type in value["type"]:
             oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, title=value["title"], summary=value["description"], icon=value["icon"]),
                                    title=value["title"],
@@ -64,7 +64,7 @@ def ChannelInfo(key, title, summary, icon):
 
 @route(PREFIX + '/InstallChannel')
 def InstallChannel(id):
-    if UAS.install_bundle(id, Prefs['PLEX_PATH'], Prefs['WEB_TOOLS_PORT']):
+    if UAS.install_bundle(id):
         return MainMenu(message="Channel Installed Successfully.")
     return MainMenu(message="Channel Installation Failed. Please see WebTools logs.")
 
@@ -77,9 +77,11 @@ def ValidatePrefs():
     Log('Validating Prefs')
     Log('Initializing WebTools Session')
     UAS = None
-    UAS = webtools.WebToolsAPI(Prefs['PLEX_PATH'], Prefs['WEB_TOOLS_PORT'], Prefs['PLEX_USERNAME'],
-                               Prefs['PLEX_PASSWORD'])
-    if UAS.IS_AUTHENTICATED:
+    UAS = webtools.WebToolsAPI(Prefs['PLEX_USERNAME'],
+                               Prefs['PLEX_PASSWORD'],
+                               Prefs['PLEX_PATH'],
+                               Prefs['WEB_TOOLS_PORT'])
+    if UAS.is_authenticated():
         Log('Connected to WebTools UAS successfully')
     else:
         Log('Connection to WebTools UAS was unsuccessful')
