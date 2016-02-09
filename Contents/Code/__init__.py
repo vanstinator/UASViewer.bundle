@@ -26,6 +26,7 @@ def MainMenu(message=""):
                     oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
             else:
                 oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
+        oc.add(PrefsObject(title=L('Preferences'), thumb=R(PREFS_ICON)))
         return oc
     except:
         ValidatePrefs()
