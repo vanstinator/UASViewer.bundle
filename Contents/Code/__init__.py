@@ -28,7 +28,7 @@ def MainMenu(message=""):
             else:
                 oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
         oc.add(DirectoryObject(key=Callback(InstalledMenu), title="Installed Channels"))
-        # oc.add(PrefsObject(title=L('Preferences'), thumb=R(PREFS_ICON)))
+        oc.add(PrefsObject(title=L('Preferences'), thumb=R(ICON)))
         return oc
     except:
         ValidatePrefs()
@@ -119,15 +119,18 @@ def UninstallChannel(name):
 def ValidatePrefs():
     """ Called by Plex every time the Preferences change
     """
-    global UAS
+    global UAS, webtools_path
     Log('Validating Prefs')
-    Log('Initializing WebTools Session')
+    Log('Initializing WebTools Session'
+    if Prefs['USE_SSL']:
+        webtools_path = 'https://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT']
+    else:
+        webtools_path = 'http://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT']
+
     UAS = None
     UAS = webtools.WebToolsAPI(Prefs['PLEX_USERNAME'],
                                Prefs['PLEX_PASSWORD'],
-                               Prefs['USE_SSL'],
-                               Prefs['PLEX_PATH'],
-                               Prefs['WEB_TOOLS_PORT'])
+                               webtools_path)
     if UAS.is_authenticated():
         Log('Connected to WebTools UAS successfully')
     else:

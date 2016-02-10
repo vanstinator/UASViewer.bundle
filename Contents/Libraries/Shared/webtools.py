@@ -1,12 +1,13 @@
 import requests
 from requests.exceptions import ConnectionError
 
+
 class WebToolsAPI:
     """
     Interfaces between the UASViewer channel code and the WebTools 2.0 API
     """
 
-    def __init__(self, plex_username, plex_password, use_ssl, plex_path="localhost", web_tools_port="33400"):
+    def __init__(self, plex_username, plex_password, webtools_path):
         """
         Instantiate a new authenticated WebToolsAPI session to interact with the WebTools Channel.
 
@@ -18,18 +19,13 @@ class WebToolsAPI:
         """
 
         # Variable Declaration
-        self.session = requests.session()
+        self._session = requests.session()
         self.channel_types = None
         self.channel_dict = None
         self._auth_status = False
         self._username = plex_username
         self._password = plex_password
-        self._path = plex_path
-        self._port = web_tools_port
-        if use_ssl:
-            self._full_path = 'https://' + self._path + ':' + self._port
-        else:
-            self._full_path = 'http://' + self._path + ':' + self._port
+        self._full_path = webtools_path
 
         # Function calls
         self._auth_session()
@@ -43,8 +39,8 @@ class WebToolsAPI:
         """
         payload = {'user': self._username, 'pwd': self._password}
         try:
-            self.session.post(self._full_path + '/login', data=payload, timeout=60)
-            if self.session.cookies['WebTools'] is not None:
+            self._session.post(self._full_path + '/login', data=payload, timeout=60)
+            if self._session.cookies['WebTools'] is not None:
                 self._auth_status = True
         except KeyError:
             # Essentially just swallow the exception. Keeps the logs clean.
@@ -57,7 +53,7 @@ class WebToolsAPI:
         :return: Bundle Data from WebTools if authenticated properly
         """
         if self._auth_status:
-            bundles = self.session.get(self._full_path + '/webtools2?module=pms&function=getAllBundleInfo')
+            bundles = self._session.get(self._full_path + '/webtools2?module=pms&function=getAllBundleInfo')
             self._build_bundle_type_dict(bundles.json())
             self.channel_dict = bundles.json().items()
 
@@ -78,20 +74,24 @@ class WebToolsAPI:
         return self._auth_status
 
     def install_bundle(self, bundle_id):
-        # TODO figure out why WebTools doesn't register bundle as installed when installed via this function
         """
         Pass in the github url of the bundle and it will be installed.
         :param bundle_id:
         :return: boolean
         """
-        r = self.session.get(self._full_path + '/webtools2?module=git&function=getGit&url=' + bundle_id)
+        r = self._session.get(self._full_path + '/webtools2?module=git&function=getGit&url=' + bundle_id)
         if r.status_code == 200:
             self._cache_bundle_data()
             return True
         return False
 
     def uninstall_bundle(self, bundle_name):
-        r = self.session.delete(self._full_path + '/webtools2?module=pms&function=delBundle&bundleName=' + bundle_name)
+        """
+       Pass in the bundle name and it will be uninstalled.
+        :param bundle_name:
+        :return: boolean
+        """
+        r = self._session.delete(self._full_path + '/webtools2?module=pms&function=delBundle&bundleName=' + bundle_name)
         if r.status_code == 200:
             self._cache_bundle_data()
             return True
