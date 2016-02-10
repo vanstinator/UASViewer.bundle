@@ -43,19 +43,29 @@ def CategoryMenu(bundle_type):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     for key, value in UAS.channel_dict:
         if bundle_type in value["type"]:
-            oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
-                                   title=value["title"],
-                                   summary=value["description"],
-                                   thumb=Callback(Thumb,
-                                                  url='http://'
-                                                        + Prefs['PLEX_PATH']
-                                                        + ':'
-                                                        + Prefs['WEB_TOOLS_PORT']
-                                                        + '/uas/Resources/'
-                                                        + value["icon"]
-                                                  )
-                                   )
-                   )
+            if Prefs['HIDE_ADULT']:
+                if "Adult" not in value["type"]:
+                    oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
+                                           title=value["title"],
+                                           summary=value["description"],
+                                           thumb=Callback(Thumb,
+                                                          url='http://'
+                                                                + Prefs['PLEX_PATH']
+                                                                + ':'
+                                                                + Prefs['WEB_TOOLS_PORT']
+                                                                + '/uas/Resources/'
+                                                                + value["icon"])))
+            else:
+                oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
+                                           title=value["title"],
+                                           summary=value["description"],
+                                           thumb=Callback(Thumb,
+                                                          url='http://'
+                                                                + Prefs['PLEX_PATH']
+                                                                + ':'
+                                                                + Prefs['WEB_TOOLS_PORT']
+                                                                + '/uas/Resources/'
+                                                                + value["icon"])))
     return oc
 
 

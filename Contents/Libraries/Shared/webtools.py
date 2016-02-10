@@ -50,7 +50,7 @@ class WebToolsAPI:
             # Essentially just swallow the exception. Keeps the logs clean.
             self._auth_status = False
         except ConnectionError:
-            self._auth_session()
+            self._auth_status = False
 
     def _cache_bundle_data(self):
         """
