@@ -5,15 +5,22 @@ NAME = 'UASViewer'
 ART = 'background.jpg'
 ICON = 'icon-default.png'  # TODO find a channel icon
 
+####################################################################################################
 
 def Start():
-    """ Run by Plex when the server starts
     """
+    Run by Plex when the server starts
+    """
+
+    Plugin.AddViewGroup("InfoList", viewMode="InfoList", mediaType="items")
+    Plugin.AddViewGroup("List", viewMode="List", mediaType="items")
+
     Log('Starting UASViewer')
     ObjectContainer.title1 = NAME
     ValidatePrefs()
 
 
+####################################################################################################
 @handler(PREFIX, NAME, art=R(ART), thumb=R(ICON))
 @route(PREFIX + '/MainMenu')
 def MainMenu(message=""):
@@ -38,9 +45,10 @@ def DeadEnd():
     return
 
 
+####################################################################################################
 @route(PREFIX + '/Category')
 def CategoryMenu(bundle_type):
-    oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
+    oc = ObjectContainer(view_group="InfoList", title2=bundle_type + " Channels")
     for key, value in UAS.channel_dict:
         if bundle_type in value["type"]:
             if Prefs['HIDE_ADULT']:
@@ -69,6 +77,7 @@ def CategoryMenu(bundle_type):
     return oc
 
 
+####################################################################################################
 @route(PREFIX + '/Installed')
 def InstalledMenu():
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
@@ -89,6 +98,8 @@ def InstalledMenu():
                    )
     return oc
 
+
+####################################################################################################
 @route(PREFIX + '/ChannelInfo')
 def ChannelInfo(key, name, date):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
@@ -101,6 +112,7 @@ def ChannelInfo(key, name, date):
     return oc
 
 
+####################################################################################################
 @route(PREFIX + '/InstallChannel')
 def InstallChannel(id):
     if UAS.install_bundle(id):
@@ -108,6 +120,7 @@ def InstallChannel(id):
     return MainMenu(message="Channel Installation Failed. Please see WebTools logs.")
 
 
+####################################################################################################
 @route(PREFIX + '/UninstallChannel')
 def UninstallChannel(name):
     if UAS.uninstall_bundle(name):
@@ -115,6 +128,7 @@ def UninstallChannel(name):
     return MainMenu(message="Channel Uninstallation Failed. Please see WebTools logs.")
 
 
+####################################################################################################
 @route(PREFIX + '/ValidatePrefs')
 def ValidatePrefs():
     """ Called by Plex every time the Preferences change
@@ -137,6 +151,7 @@ def ValidatePrefs():
         Log('Connection to WebTools UAS was unsuccessful')
 
 
+####################################################################################################
 def Thumb(url):
     """ Go try to get the thumbnail and cache it into memory
     """
