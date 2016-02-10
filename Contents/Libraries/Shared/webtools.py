@@ -83,9 +83,13 @@ class WebToolsAPI:
         """
         r = self.session.get(self._full_path + '/webtools2?module=git&function=getGit&url=' + bundle_id)
         if r.status_code == 200:
+            self._cache_bundle_data()
             return True
         return False
 
-    def uninstall_bundle(self, bundle_id):
-        # TODO add uninstall logic
+    def uninstall_bundle(self, bundle_name):
+        r = self.session.delete(self._full_path + '/webtools2?module=pms&function=delBundle&bundleName=' + bundle_name)
+        if r.status_code == 200:
+            return True
+        self._cache_bundle_data()
         return False

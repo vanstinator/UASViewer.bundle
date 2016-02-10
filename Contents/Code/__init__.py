@@ -37,7 +37,7 @@ def CategoryMenu(bundle_type):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     for key, value in UAS.channel_dict:
         if bundle_type in value["type"]:
-            oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, title=value["title"], summary=value["description"], icon=value["icon"]),
+            oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
                                    title=value["title"],
                                    summary=value["description"],
                                    thumb=Callback(Thumb,
@@ -54,12 +54,15 @@ def CategoryMenu(bundle_type):
 
 
 @route(PREFIX + '/ChannelInfo')
-def ChannelInfo(key, title, summary, icon):
+def ChannelInfo(key, name, date):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
-    oc.add(DirectoryObject(key=Callback(InstallChannel, id=key),
-                           title="Install Channel"
-                           )
-           )
+    Log(date)
+    if date is not None:
+        oc.add(DirectoryObject(key=Callback(UninstallChannel, name=name),
+                               title="Uninstall Channel"))
+    else:
+        oc.add(DirectoryObject(key=Callback(InstallChannel, id=key),
+                               title="Install Channel"))
     return oc
 
 
@@ -68,6 +71,13 @@ def InstallChannel(id):
     if UAS.install_bundle(id):
         return MainMenu(message="Channel Installed Successfully.")
     return MainMenu(message="Channel Installation Failed. Please see WebTools logs.")
+
+
+@route(PREFIX + '/UninstallChannel')
+def UninstallChannel(name):
+    if UAS.uninstall_bundle(name):
+        return MainMenu(message="Channel Uninstalled Successfully.")
+    return MainMenu(message="Channel Uninstallation Failed. Please see WebTools logs.")
 
 
 @route(PREFIX + '/ValidatePrefs')
