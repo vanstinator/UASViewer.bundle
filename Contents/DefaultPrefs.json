@@ -26,7 +26,7 @@
     "default": ""
   },
   {
-    "id": "USE_HTTPS",
+    "id": "USE_SSL",
     "label": "Use SSL",
     "type": "bool",
     "default": "false"
