@@ -15,15 +15,15 @@
   },
   {
     "id": "PLEX_PATH",
-    "label": "PMS Address - Blank for localhost",
+    "label": "PMS Address",
     "type": "text",
-    "default": ""
+    "default": "localhost"
   },
   {
     "id": "WEB_TOOLS_PORT",
-    "label": "WebTools Port - Blank for default",
+    "label": "WebTools Port",
     "type": "text",
-    "default": ""
+    "default": "33400"
   },
   {
     "id": "USE_SSL",
