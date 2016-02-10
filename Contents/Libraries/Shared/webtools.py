@@ -37,11 +37,12 @@ class WebToolsAPI:
 
     def _auth_session(self):
         """
-        Authenticates a user account against WebTools backend. Sets the auth_status to true if successful.
+        Authenticates a user account against WebTools backend. Sets the auth_status to true if successful. Times out
+        after 60 seconds. If WebTools isn't started first this will fail without a long timeout
         :return: boolean
         """
         payload = {'user': self._username, 'pwd': self._password}
-        self.session.post(self._full_path + '/login', data=payload)
+        self.session.post(self._full_path + '/login', data=payload, timeout=60)
         try:
             if self.session.cookies['WebTools'] is not None:
                 self._auth_status = True

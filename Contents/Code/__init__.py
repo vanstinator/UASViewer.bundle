@@ -19,6 +19,7 @@ def Start():
 def MainMenu(message=""):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     oc.message = message
+    oc.add(DirectoryObject(key=Callback(DeadEnd), title="ANY USER CAN ACCESS THIS CHANNEL"))
     try:
         for value in UAS.channel_types:
             if Prefs['HIDE_ADULT']:
@@ -31,6 +32,10 @@ def MainMenu(message=""):
         return oc
     except:
         ValidatePrefs()
+
+
+def DeadEnd():
+    return
 
 
 @route(PREFIX + '/Category')
