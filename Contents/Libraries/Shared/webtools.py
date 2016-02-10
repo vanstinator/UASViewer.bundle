@@ -1,5 +1,5 @@
 import requests
-
+from requests.exceptions import ConnectionError
 
 class WebToolsAPI:
     """
@@ -42,13 +42,15 @@ class WebToolsAPI:
         :return: boolean
         """
         payload = {'user': self._username, 'pwd': self._password}
-        self.session.post(self._full_path + '/login', data=payload, timeout=60)
         try:
+            self.session.post(self._full_path + '/login', data=payload, timeout=60)
             if self.session.cookies['WebTools'] is not None:
                 self._auth_status = True
         except KeyError:
             # Essentially just swallow the exception. Keeps the logs clean.
             self._auth_status = False
+        except ConnectionError:
+            self._auth_session()
 
     def _cache_bundle_data(self):
         """
