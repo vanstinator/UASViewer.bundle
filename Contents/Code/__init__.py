@@ -26,6 +26,7 @@ def MainMenu(message=""):
                     oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
             else:
                 oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
+        oc.add(DirectoryObject(key=Callback(InstalledMenu), title="Installed Channels"))
         # oc.add(PrefsObject(title=L('Preferences'), thumb=R(PREFS_ICON)))
         return oc
     except:
@@ -53,10 +54,29 @@ def CategoryMenu(bundle_type):
     return oc
 
 
+@route(PREFIX + '/Installed')
+def InstalledMenu():
+    oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
+    for key, value in UAS.channel_dict:
+        if len(value["date"]) > 0: # TODO figure out why on earth "is not None" doesn't return as true
+            oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
+                                   title=value["title"],
+                                   summary=value["description"],
+                                   thumb=Callback(Thumb,
+                                                  url='http://'
+                                                        + Prefs['PLEX_PATH']
+                                                        + ':'
+                                                        + Prefs['WEB_TOOLS_PORT']
+                                                        + '/uas/Resources/'
+                                                        + value["icon"]
+                                                  )
+                                   )
+                   )
+    return oc
+
 @route(PREFIX + '/ChannelInfo')
 def ChannelInfo(key, name, date):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
-    Log(date)
     if date is not None:
         oc.add(DirectoryObject(key=Callback(UninstallChannel, name=name),
                                title="Uninstall Channel"))
