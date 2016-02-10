@@ -90,6 +90,6 @@ class WebToolsAPI:
     def uninstall_bundle(self, bundle_name):
         r = self.session.delete(self._full_path + '/webtools2?module=pms&function=delBundle&bundleName=' + bundle_name)
         if r.status_code == 200:
+            self._cache_bundle_data()
             return True
-        self._cache_bundle_data()
         return False
