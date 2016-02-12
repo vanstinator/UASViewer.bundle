@@ -39,7 +39,7 @@ class WebToolsAPI:
         """
         payload = {'user': self._username, 'pwd': self._password}
         try:
-            self._session.post(self._full_path + '/login', data=payload, timeout=60)
+            self._session.post(self._full_path + '/login', data=payload, timeout=60, verify=False)
             if self._session.cookies['WebTools'] is not None:
                 self._auth_status = True
         except KeyError:
@@ -53,7 +53,7 @@ class WebToolsAPI:
         :return: Bundle Data from WebTools if authenticated properly
         """
         if self._auth_status:
-            bundles = self._session.get(self._full_path + '/webtools2?module=pms&function=getAllBundleInfo')
+            bundles = self._session.get(self._full_path + '/webtools2?module=pms&function=getAllBundleInfo', verify=False)
             self._build_bundle_type_dict(bundles.json())
             self.channel_dict = bundles.json().items()
 
@@ -79,7 +79,7 @@ class WebToolsAPI:
         :param bundle_id:
         :return: boolean
         """
-        r = self._session.get(self._full_path + '/webtools2?module=git&function=getGit&url=' + bundle_id)
+        r = self._session.get(self._full_path + '/webtools2?module=git&function=getGit&url=' + bundle_id, verify=False)
         if r.status_code == 200:
             self._cache_bundle_data()
             return True
@@ -91,7 +91,7 @@ class WebToolsAPI:
         :param bundle_name:
         :return: boolean
         """
-        r = self._session.delete(self._full_path + '/webtools2?module=pms&function=delBundle&bundleName=' + bundle_name)
+        r = self._session.delete(self._full_path + '/webtools2?module=pms&function=delBundle&bundleName=' + bundle_name, verify=False)
         if r.status_code == 200:
             self._cache_bundle_data()
             return True

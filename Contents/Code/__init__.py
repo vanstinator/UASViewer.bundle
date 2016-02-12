@@ -24,8 +24,6 @@ def Start():
 @handler(PREFIX, NAME, art=R(ART), thumb=R(ICON))
 @route(PREFIX + '/MainMenu')
 def MainMenu(message=""):
-    if not UAS.is_authenticated:
-        ValidatePrefs()
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     oc.message = message
     oc.add(DirectoryObject(key=Callback(DeadEnd), title="ANY USER CAN ACCESS THIS CHANNEL"))
