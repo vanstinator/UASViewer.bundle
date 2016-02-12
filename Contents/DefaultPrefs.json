@@ -20,6 +20,12 @@
     "default": "33400"
   },
   {
+    "id": "WEB_TOOLS_SSL_PORT",
+    "label": "WebTools HTTPS Port",
+    "type": "text",
+    "default": "33443"
+  },
+  {
     "id": "USE_SSL",
     "label": "Use SSL",
     "type": "bool",
