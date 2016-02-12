@@ -1,5 +1,11 @@
 [
   {
+    "id": "LOCK_CHANNEL",
+    "label": "Lock Channel",
+    "type": "bool",
+    "default": "false"
+  },
+  {
     "id": "PLEX_USERNAME",
     "label": "Plex.tv Login",
     "type": "text",

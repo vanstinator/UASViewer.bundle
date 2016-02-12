@@ -25,24 +25,26 @@ def Start():
 @route(PREFIX + '/MainMenu')
 def MainMenu(message=""):
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
-    oc.message = message
-    oc.add(DirectoryObject(key=Callback(DeadEnd), title="ANY USER CAN ACCESS THIS CHANNEL"))
-    try:
-        for value in UAS.channel_types:
-            if Prefs['HIDE_ADULT']:
-                if value != "Adult":
+    if not Prefs['LOCK_CHANNEL']:
+        oc.message = message
+        oc.add(DirectoryObject(key=Callback(MainMenu), title="WARNING! CURRENTLY UNLOCKED!"))
+        try:
+            for value in UAS.channel_types:
+                if Prefs['HIDE_ADULT']:
+                    if value != "Adult":
+                        oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
+                else:
                     oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
-            else:
-                oc.add(DirectoryObject(key=Callback(CategoryMenu, bundle_type=value), title=value))
-        oc.add(DirectoryObject(key=Callback(InstalledMenu), title="Installed Channels"))
-        oc.add(PrefsObject(title=L('Preferences'), thumb=R(ICON)))
-        return oc
-    except:
-        ValidatePrefs()
+            oc.add(DirectoryObject(key=Callback(InstalledMenu), title="Installed Channels"))
 
+        except:
+            ValidatePrefs()
+    else:
+        Log('Attempt to access while locked')
+        oc.add(DirectoryObject(key=Callback(MainMenu), title="UNAUTHORIZED."))
+        oc.add(DirectoryObject(key=Callback(MainMenu), title="CHANNEL IS LOCKED."))
 
-def DeadEnd():
-    return
+    return oc
 
 
 ####################################################################################################
@@ -99,6 +101,8 @@ def ChannelInfo(key, name, date):
 def InstallChannel(id):
     if UAS.install_bundle(id):
         return MainMenu(message="Channel Installed Successfully.")
+    elif Prefs['LOCK_CHANNEL']:
+        return MainMenu(message="Channel is Locked.")
     return MainMenu(message="Channel Installation Failed. Please see WebTools logs.")
 
 
@@ -107,6 +111,8 @@ def InstallChannel(id):
 def UninstallChannel(name):
     if UAS.uninstall_bundle(name):
         return MainMenu(message="Channel Uninstalled Successfully.")
+    elif Prefs['LOCK_CHANNEL']:
+        return MainMenu(message="Channel is Locked.")
     return MainMenu(message="Channel Uninstallation Failed. Please see WebTools logs.")
 
 
