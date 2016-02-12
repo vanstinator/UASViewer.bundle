@@ -44,6 +44,8 @@ def MainMenu(message=""):
         oc.add(DirectoryObject(key=Callback(MainMenu), title="UNAUTHORIZED."))
         oc.add(DirectoryObject(key=Callback(MainMenu), title="CHANNEL IS LOCKED."))
 
+    oc.add(PrefsObject(title='Preferences', thumb=R('icon-default.png')))
+
     return oc
 
 
