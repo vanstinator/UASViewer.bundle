@@ -53,23 +53,9 @@ def CategoryMenu(bundle_type):
         if bundle_type in value["type"]:
             if Prefs['HIDE_ADULT']:
                 if "Adult" not in value["type"]:
-                    oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
-                                           title=value["title"],
-                                           summary=value["description"],
-                                           thumb=Callback(Thumb,
-                                                          url=
-                                                          webtools_path +
-                                                          '/uas/Resources/' +
-                                                          value["icon"])))
+                    oc.add(ChannelItem(key, value))
             else:
-                oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
-                                           title=value["title"],
-                                           summary=value["description"],
-                                           thumb=Callback(Thumb,
-                                                          url=
-                                                          webtools_path +
-                                                          '/uas/Resources/' +
-                                                          value["icon"])))
+                oc.add(ChannelItem(key, value))
     return oc
 
 
@@ -79,15 +65,20 @@ def InstalledMenu():
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     for key, value in UAS.channel_dict:
         if value["date"]:
-            oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
-                                   title=value["title"],
-                                   summary=value["description"],
-                                   thumb=Callback(Thumb,
-                                                  url=
-                                                  webtools_path +
-                                                  '/uas/Resources/' +
-                                                  value["icon"])))
+            oc.add(ChannelItem(key, value))
     return oc
+
+
+####################################################################################################
+def ChannelItem(key, value):
+    return DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
+                                           title=value["title"],
+                                           summary=value["description"],
+                                           thumb=Callback(Thumb,
+                                                          url=
+                                                          webtools_path +
+                                                          '/uas/Resources/' +
+                                                          value["icon"]))
 
 
 ####################################################################################################
