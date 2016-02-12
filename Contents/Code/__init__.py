@@ -3,7 +3,7 @@ import webtools
 PREFIX = "/applications/UASViewer"
 NAME = 'UASViewer'
 ART = 'background.jpg'
-ICON = 'icon-default.png'  # TODO find a channel icon
+ICON = 'icon-default.png'
 
 ####################################################################################################
 
@@ -82,7 +82,7 @@ def CategoryMenu(bundle_type):
 def InstalledMenu():
     oc = ObjectContainer(no_cache=True, no_history=True, replace_parent=True)
     for key, value in UAS.channel_dict:
-        if len(value["date"]) > 0: # TODO figure out why on earth "is not None" doesn't return as true
+        if value["date"]:
             oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
                                    title=value["title"],
                                    summary=value["description"],
@@ -135,8 +135,8 @@ def ValidatePrefs():
     """
     global UAS, webtools_path
     Log('Validating Prefs')
-    Log('Initializing WebTools Session'
-    if Prefs['USE_SSL']:
+    Log('Initializing WebTools Session')
+    if Prefs['USE_SSL'] is not False:
         webtools_path = 'https://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT']
     else:
         webtools_path = 'http://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT']
