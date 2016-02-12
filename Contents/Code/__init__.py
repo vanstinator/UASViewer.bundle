@@ -57,23 +57,19 @@ def CategoryMenu(bundle_type):
                                            title=value["title"],
                                            summary=value["description"],
                                            thumb=Callback(Thumb,
-                                                          url='http://'
-                                                                + Prefs['PLEX_PATH']
-                                                                + ':'
-                                                                + Prefs['WEB_TOOLS_PORT']
-                                                                + '/uas/Resources/'
-                                                                + value["icon"])))
+                                                          url=
+                                                          webtools_path +
+                                                          '/uas/Resources/' +
+                                                          value["icon"])))
             else:
                 oc.add(DirectoryObject(key=Callback(ChannelInfo, key=key, name=value["bundle"], date=value["date"]),
                                            title=value["title"],
                                            summary=value["description"],
                                            thumb=Callback(Thumb,
-                                                          url='http://'
-                                                                + Prefs['PLEX_PATH']
-                                                                + ':'
-                                                                + Prefs['WEB_TOOLS_PORT']
-                                                                + '/uas/Resources/'
-                                                                + value["icon"])))
+                                                          url=
+                                                          webtools_path +
+                                                          '/uas/Resources/' +
+                                                          value["icon"])))
     return oc
 
 
@@ -87,15 +83,10 @@ def InstalledMenu():
                                    title=value["title"],
                                    summary=value["description"],
                                    thumb=Callback(Thumb,
-                                                  url='http://'
-                                                        + Prefs['PLEX_PATH']
-                                                        + ':'
-                                                        + Prefs['WEB_TOOLS_PORT']
-                                                        + '/uas/Resources/'
-                                                        + value["icon"]
-                                                  )
-                                   )
-                   )
+                                                  url=
+                                                  webtools_path +
+                                                  '/uas/Resources/' +
+                                                  value["icon"])))
     return oc
 
 
@@ -137,9 +128,9 @@ def ValidatePrefs():
     Log('Validating Prefs')
     Log('Initializing WebTools Session')
     if Prefs['USE_SSL'] is not False:
-        webtools_path = 'https://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT']
+        webtools_path = 'https://127.0.0.1:' + Prefs['WEB_TOOLS_PORT']
     else:
-        webtools_path = 'http://' + Prefs['PLEX_PATH'] + ':' + Prefs['WEB_TOOLS_PORT']
+        webtools_path = 'http://127.0.0.1:' + Prefs['WEB_TOOLS_PORT']
 
     UAS = None
     UAS = webtools.WebToolsAPI(Prefs['PLEX_USERNAME'],
